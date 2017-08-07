@@ -12,3 +12,13 @@ canvas {
     height: 100%;
     touch-action: none;
 }
+
+#gunsight {
+    position:absolute;
+    top:50%;
+    left:50%;
+    margin-top:-37px;
+    margin-left:-37px;
+    font-size: 120px;
+    font-weight: bold;
+}

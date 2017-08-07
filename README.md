@@ -3,7 +3,7 @@
 
 This project incorporates two important things:
 
-1) A week ago, my roommate woke me up at six in the morning on a Saturday to kill a cockroach.
+1) A week ago, my roommate woke me up at six in the morning on a Saturday to kill a bug.
 
 This served as inspiration for one aspect of my final project: to allow random strangers
 to annoy him through the internet.
@@ -20,6 +20,6 @@ TECH SPECS: A Babylon.js (and Cannon.js, for physics) powered game. I'm only jus
 
 A rails server, with a React front-end. The views at present are just login, intro to the game, game play, and scoreboard. I'm not including wireframes because 5 rectangles on a screen doesn't really add to that description.
 
-An arduino acting as a web-client servo controller;
+An arduino acting as a web-client servo (or relay, depending on which horn I use) controller;
 
 A node server (express) using local tunneling to relay data between the arduino and the interwebs.
