@@ -23,12 +23,12 @@ function createScene() {
     camera.setTarget(new BABYLON.Vector3(0, 0, 20));
     camera.maxZ = 1000;
     camera.speed = 4
-    // camera.attachControl(canvas, true);
+    camera.attachControl(canvas, true);
 
     const hLight = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0, 0.5, 0), scene);
     hLight.intensity = 0.6;
 
-    var dirLight = new BABYLON.DirectionalLight("dir", new BABYLON.Vector3(0, -0.5, 0.5), scene);
+    const dirLight = new BABYLON.DirectionalLight("dir", new BABYLON.Vector3(0, -0.5, 0.5), scene);
     dirLight.position = new BABYLON.Vector3(0.1, 100, -100);
     dirLight.intensity = 0.4;
     dirLight.diffuse = BABYLON.Color3.FromInts(204, 196, 255);
@@ -42,13 +42,13 @@ function createScene() {
 function makeShip(size, scene) {
     const ship = new BABYLON.Mesh.CreateBox('ship', 1, scene);
     ship.killed = false;
-    ship.ammo = 3;
+    ship.ammo = 30;
 
     ship.position.x = 0;
     ship.position.z = 0;
     ship.position.y = size / 2;
 
-    ship.speed = 3;
+    ship.speed = 5;
     ship.moveLeft = false;
     ship.moveRight = false;
 
@@ -72,8 +72,13 @@ BABYLON.Tools.RegisterTopRootEvents([
     }, {
         name: "keyup",
         handler: onKeyUp
+    }, {
+        name: "ammoUpdated",
+        handler: updateAmmoLabel
     }
 ]);
+
+
 
 function onKeyDown(e) {
     if (e.keyCode === 65) {
@@ -125,15 +130,37 @@ function makeBuilding () {
     const trigger = { trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger, parameter: ship };
     const killShip = new BABYLON.SwitchBooleanAction(trigger, ship, 'killed');
     building.actionManager.registerAction(killShip);
+
+    //if ammo > 1
+    const condition = new BABYLON.ValueCondition(building.actionManager, ship, "ammo", 0, BABYLON.ValueCondition.IsGreater);
+
+    const onpickAction = new BABYLON.ExecuteCodeAction(
+        BABYLON.ActionManager.OnPickTrigger,
+        function(evt) {
+            if (evt.meshUnderPointer) {
+                const meshClicked = evt.meshUnderPointer;
+                meshClicked.dispose();
+                ship.ammo -= 1;
+                sendEvent();
+            }
+        },
+        condition);
+
+    building.actionManager.registerAction(onpickAction);
+
+}
+
+function updateAmmoLabel() {
+    document.querySelector("#ammoLabel").innerHTML = "AMMO : "+ship.ammo;
+};
+
+function sendEvent() {
+    const event = new Event('ammoUpdated');
+    window.dispatchEvent(event);
 }
 
 
 setInterval(makeBuilding, 100);
-
-
-
-
-
 
 
 
