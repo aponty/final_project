@@ -1,3 +1,12 @@
+/**
+Built with some adaptations (I don't like prototypical inheritance)
+following a tutorial at http://pixelcodr.com/tutos/plane/plane.html
+
+Tutorial creator is Julian Chenard, part of Babylon's dev team;
+all things considered, his work taught me how to use this library
+*/
+
+
 const canvas = document.querySelector('#canvas')
 const engine = new BABYLON.Engine(canvas, true);
 window.addEventListener('resize', () => engine.resize());

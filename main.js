@@ -2,26 +2,20 @@ const canvas = document.querySelector('#canvas')
 const engine = new BABYLON.Engine(canvas, true);
 window.addEventListener('resize', () => engine.resize());
 const scene = createSceneLightGravity();
-const orb = makeOrb();
+
 const camera = makeCamera()
 
 function createSceneLightGravity() {
     const scene = new BABYLON.Scene(engine);
-    //babylon's physics
-    // scene.enableGravity = new BABYLON.Vector3(0, -9.81, 0);
-    scene.enablePhysics(new BABYLON.Vector3(0, -9.81, 0), new BABYLON.CannonJSPlugin());
 
     const light0 = new BABYLON.HemisphericLight("Hemi0", new BABYLON.Vector3(0, 1, 0), scene);
     light0.diffuse = new BABYLON.Color3(1, 1, 1);
+    const light1 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(2, -5, -2), scene);
+    light1.intensity = 0.3;
 
-    //Ground
     const ground = BABYLON.Mesh.CreateBox("ground", 200, scene);
     ground.position = new BABYLON.Vector3(0, 0, 0);
     ground.scaling.y = 0.01;
-
-    // ground.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
-    //cannon
-    ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0 }, scene);
 
     //boxes. This should be a function.
     const box = BABYLON.Mesh.CreateBox("box", 1, scene);
@@ -30,8 +24,6 @@ function createSceneLightGravity() {
     const action = new BABYLON.InterpolateValueAction(BABYLON.ActionManager.OnPickTrigger, box, "visibility", 0.2, 1000);
     box.actionManager.registerAction(action)
 
-    box.physicsImpostor = new BABYLON.PhysicsImpostor(box, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0 }, scene);
-
     //Wall
     const wall = BABYLON.Mesh.CreateBox("wall", 20, scene, false, BABYLON.Mesh.FRONTSIDE);
     wall.position.y = 10
@@ -39,30 +31,59 @@ function createSceneLightGravity() {
     wall.scaling.x = 10
     wall.scaling.y = 3
     wall.scaling.z = .1
-    wall.physicsImpostor = new BABYLON.PhysicsImpostor(wall, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0 }, scene);
 
-    //Collisions
+    //Cannon physics
+    scene.enablePhysics(new BABYLON.Vector3(0, -9.81, 0), new BABYLON.CannonJSPlugin());
+    ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0 }, scene);
+    wall.physicsImpostor = new BABYLON.PhysicsImpostor(wall, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0 }, scene);
+    box.physicsImpostor = new BABYLON.PhysicsImpostor(box, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0 }, scene);
+
+    //babylon's physics collisions
+    scene.enableGravity = new BABYLON.Vector3(0, -9.81, 0);
     scene.collisionsEnabled = true;
-    // ground.checkCollisions = true;
-    // box.checkCollisions = true;
-    // wall.checkCollisions = true;
+
+    ground.checkCollisions = true;
+    box.checkCollisions = true;
+    wall.checkCollisions = true;
 
     return scene;
 }
 
 function makeCamera() {
     const camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(0, 2, -20), scene);
-    camera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
-    // camera.applyGravity = true;
-    camera.checkCollisions = true;
-
     camera.attachControl(canvas, true);
-    camera.physicsImpostor = new BABYLON.PhysicsImpostor(camera, BABYLON.PhysicsImpostor.SphereImpostor, { mass: 1000, restitution: 0 }, scene);
+    camera.applyGravity = true;
+    camera.checkCollisions = true;
+    camera._needMoveForGravity = true;
     return camera
 }
 
-function jumpCamera(camera) {
-    if (camera.jump) camera.position.y += 1;
+function jumpCamera(cam) {
+    //had lots of issues with this. Ended up using code from iiceman's example here-
+    //thread: http://www.html5gamedevs.com/topic/12198-camera-jump/
+    //code: http://www.babylonjs-playground.com/#XN87O%232
+    cam.animations = [];
+
+    const a = new BABYLON.Animation(
+        "a",
+        "position.y", 20,
+        BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+        BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+
+    // Animation keys
+    const keys = [];
+    keys.push({ frame: 0, value: cam.position.y });
+    keys.push({ frame: 10, value: cam.position.y + 20 });
+    keys.push({ frame: 20, value: cam.position.y });
+    a.setKeys(keys);
+
+    const easingFunction = new BABYLON.CircleEase();
+    easingFunction.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
+    a.setEasingFunction(easingFunction);
+
+    cam.animations.push(a);
+
+    scene.beginAnimation(cam, 0, 20, false);
 }
 
 BABYLON.Tools.RegisterTopRootEvents([
@@ -76,42 +97,50 @@ BABYLON.Tools.RegisterTopRootEvents([
 ]);
 
 function onKeyDown(event) {
-    if (event.keyCode === 32) camera.jump = true
+    // if (event.keyCode === 32) camera.jump = true
 }
 
 function onKeyUp(event) {
-    if (event.keyCode === 32) camera.jump = false;
+    if (event.keyCode === 32) jumpCamera(camera)
 }
 
-function makeOrb() {
-    const orb = BABYLON.Mesh.CreateSphere('orb', 10, 3, scene);
-    orb.position = new BABYLON.Vector3(0, 5, 0);
-    orb.velocity = {}
-    orb.velocity.z = .2;
-    orb.velocity.y = .2;
-    orb.velocity.x = .2;
-
-    orb.actionManager = new BABYLON.ActionManager(scene);
-    const action = new BABYLON.InterpolateValueAction(BABYLON.ActionManager.OnPickTrigger, orb, "visibility", 0.2, 1000);
-    orb.actionManager.registerAction(action)
-
-    return orb
+function randomNumber (min, max) {
+    if (min === max) {
+        return min;
+    }
+    let random = Math.random();
+    return ((random * (max - min)) + min );
 }
 
-function moveOrb() {
-    orb.position.z += orb.velocity.z
-    orb.position.y += orb.velocity.y
-    orb.position.x += orb.velocity.x
-    if (orb.position.z >= 75 || orb.position.z <= -75)
-        orb.velocity.z = -orb.velocity.z
-    if (orb.position.y >= 15 || orb.position.y <= 0)
-        orb.velocity.y = -orb.velocity.y
-    if (orb.position.x >= 75 || orb.position.x <= -75)
-        orb.velocity.x = -orb.velocity.x
+function makeBuilding () {
+    //adapted from http://pixelcodr.com/tutos/plane/plane.html
+    const minZ = camera.position.z + 100;
+    const maxZ = camera.position.z + 100
+    const minX = camera.position.x - 100;
+    const maxX = camera.position.x + 100;
+    const minSize = 2;
+    const maxSize = 10;
+
+    const randomX = randomNumber(minX, maxX);
+    const randomZ = randomNumber(minZ, maxZ);
+    const randomSize = randomNumber(minSize, maxSize);
+
+    const building = BABYLON.Mesh.CreateBox('building', randomSize, scene);
+
+    building.scaling.x = randomNumber(0.5, 1.5);
+    building.scaling.y = randomNumber(4, 8);
+    building.scaling.z = randomNumber(2, 3);
+
+    building.position.x = randomX;
+    building.position.y = 0 ;
+    building.position.z = randomZ;
+
+    building.checkCollisions = true
+}
+for(let i = 0; i < 100; i++) {
+    makeBuilding();
 }
 
 engine.runRenderLoop(() => {
     scene.render();
-    moveOrb(orb);
-    jumpCamera(camera);
 });
