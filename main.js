@@ -1,6 +1,9 @@
-let ground, buildings = []
+let ground;
+const buildings = []
 const canvas = document.querySelector('#canvas')
+
 const engine = new BABYLON.Engine(canvas, true);
+engine.isPointerLock = true;
 window.addEventListener('resize', () => engine.resize());
 BABYLON.Tools.RegisterTopRootEvents([
     {
@@ -10,13 +13,12 @@ BABYLON.Tools.RegisterTopRootEvents([
         name: "keyup",
         handler: onKeyUp
     }, {
-        name: "ammoUpdated",
-        handler: updateAmmoLabel
+        name: "click",
+        handler: pickCurrentTarget
     }
 ]);
 const scene = createScene();
 const camera = makeCamera()
-
 
 function createScene() {
     const scene = new BABYLON.Scene(engine);
@@ -72,26 +74,37 @@ function createScene() {
     scene.collisionsEnabled = true;
 
     ground.checkCollisions = true;
+
     backWall.checkCollisions = true;
     frontWall.checkCollisions = true;
     leftWall.checkCollisions = true;
     rightWall.checkCollisions = true;
 
+    backWall.physicsImpostor = new BABYLON.PhysicsImpostor(backWall, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0 }, scene);
+    frontWall.physicsImpostor = new BABYLON.PhysicsImpostor(frontWall, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0 }, scene);
+    leftWall.physicsImpostor = new BABYLON.PhysicsImpostor(leftWall, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0 }, scene);
+    rightWall.physicsImpostor = new BABYLON.PhysicsImpostor(rightWall, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0 }, scene);
+    for (let i = 0; i < 100; i++) {
+        makeBuilding(scene);
+    }
     return scene;
 }
 
 function makeCamera() {
-    const camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(0, 2, -20), scene);
+    const camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(0, 3, -20), scene);
     //for map dev
     // camera.position.y = 325
     // camera.position.z = -350
     // camera.setTarget(BABYLON.Vector3.Zero());
 
+    camera.angularSensibility = 1500
     camera.applyGravity = true;
+    camera.ellipsoid = new BABYLON.Vector3(2, 2, 2);
     camera.attachControl(canvas, true);
     camera.checkCollisions = true;
     camera._needMoveForGravity = true;
     camera.ammo = 30;
+
     return camera
 }
 
@@ -99,19 +112,18 @@ function jumpCamera(cam) {
     //had lots of issues with this. Ended up using code from iiceman's example here-
     //thread: http://www.html5gamedevs.com/topic/12198-camera-jump/
     //code: http://www.babylonjs-playground.com/#XN87O%232
+    //you can jump through ceilings though. There's a method called .moveWithCollisions that's used to move the camera around
+    //but I don't see where to integrate it here. Could do a check of "is there something within 20 units up, if so how much, only jump to that height"
+    //but right now I need to keep moving.
     cam.animations = [];
 
-    const a = new BABYLON.Animation(
-        "a",
-        "position.y", 20,
-        BABYLON.Animation.ANIMATIONTYPE_FLOAT,
-        BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+    const a = new BABYLON.Animation("a", "position.y", 20, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
 
     // Animation keys
     const keys = [];
-    keys.push({ frame: 0, value: cam.position.y });
-    keys.push({ frame: 10, value: cam.position.y + 19 });
-    keys.push({ frame: 20, value: cam.position.y });
+    keys.push({frame: 0, value: cam.position.y});
+    keys.push({frame: 10, value: cam.position.y + 23});
+    keys.push({frame: 20, value: cam.position.y});
     a.setKeys(keys);
 
     const easingFunction = new BABYLON.CircleEase();
@@ -126,11 +138,13 @@ function onKeyDown(event) {
 }
 
 function onKeyUp(event) {
-    if (event.keyCode === 32) jumpCamera(camera)
-    if (event.keyCode === 65) endAnimation();
-}
+    if (event.keyCode === 32)
+        jumpCamera(camera)
+    if (event.keyCode === 57)
+        endAnimation();
+    }
 
-function makeBuilding () {
+function makeBuilding(scene) {
     //adapted from http://pixelcodr.com/tutos/plane/plane.html
     const randomX = Math.random() * -400 + 200
     const randomZ = Math.random() * -400 + 200
@@ -144,58 +158,61 @@ function makeBuilding () {
 
     building.position.x = randomX;
     building.position.z = randomZ;
-    building.position.y = randomSize * (building.scaling.y/2)
+    building.position.y = randomSize * (building.scaling.y / 2)
 
     building.checkCollisions = true
     buildings.push(building)
-    building.physicsImpostor = new BABYLON.PhysicsImpostor(building, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 100000, restitution: 0 }, scene);
-
-    building.actionManager = new BABYLON.ActionManager(scene);
-    const condition = new BABYLON.ValueCondition(building.actionManager, camera, "ammo", 0, BABYLON.ValueCondition.IsGreater);
-
-    const onpickAction = new BABYLON.ExecuteCodeAction(
-        BABYLON.ActionManager.OnPickTrigger,
-        function(evt) {
-            if (evt.meshUnderPointer) {
-                const meshClicked = evt.meshUnderPointer;
-                console.log(camera.getTarget().subtract(camera.position))
-                building.applyImpulse(new BABYLON.Vector3(0, 0, 2000000), building.getAbsolutePosition());
-                // meshClicked.dispose();
-                camera.ammo -= 1;
-                sendEvent();
-            }
-        },
-        condition);
-    building.actionManager.registerAction(onpickAction);
-
+    building.physicsImpostor = new BABYLON.PhysicsImpostor(building, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 100000, restitution: 1 }, scene);
 }
 
-function updateAmmoLabel() {
-    document.querySelector("#ammoLabel").innerHTML = "AMMO : "+ camera.ammo;
-};
+function pickCurrentTarget() {
+    //this guy is my hero
+    //http://www.html5gamedevs.com/topic/18591-interaction-with-meshes-while-the-pointer-is-locked/
+    //http://www.babylonjs-playground.com/#1WIOXI
+    if (camera.ammo > 0) {
+        const ray = new BABYLON.Ray(camera.position, camera.getTarget().subtract(camera.position));
+        const pickInfo = scene.pickWithRay(ray, function (mesh) {
+            return mesh
+        });
+        camera.ammo -= 1;
+        document.querySelector("#ammoLabel").innerHTML = "AMMO : " + camera.ammo;
+        // Bullet creation from http://www.html5gamedevs.com/topic/10702-how-to-set-the-direction-for-bullets/
+        //http://www.babylonjs-playground.com/#VWXHP#3
+        const bullet = BABYLON.Mesh.CreateSphere('bullet', 3, 0.3, scene);
+        const startPos = camera.position;
 
-function sendEvent() {
-    const event = new Event('ammoUpdated');
-    window.dispatchEvent(event);
+        bullet.position = new BABYLON.Vector3(startPos.x, startPos.y, startPos.z);
+        bullet.material = new BABYLON.StandardMaterial('texture1', scene);
+        bullet.material.diffuseColor = new BABYLON.Color3(0, 0, 0);
+
+        const invView = new BABYLON.Matrix();
+        camera.getViewMatrix().invertToRef(invView);
+        const direction = BABYLON.Vector3.TransformNormal(new BABYLON.Vector3(0, 0, 1), invView);
+
+        direction.normalize();
+
+        scene.registerBeforeRender(function() {
+            bullet.position.addInPlace(direction);
+        });
+
+        if (pickInfo.hit) {
+            let x = camera.getTarget().subtract(camera.position).x * 1000000
+            let y = camera.getTarget().subtract(camera.position).y * 1000000
+            let z = camera.getTarget().subtract(camera.position).z * 1000000
+            pickInfo.pickedMesh.applyImpulse(new BABYLON.Vector3(x, y, z), pickInfo.pickedMesh.getAbsolutePosition());
+        }
+    }
 }
-
-for(let i = 0; i < 100; i++) {
-    makeBuilding();
-}
-
-engine.runRenderLoop(() => {
-    scene.render();
-});
 
 function endAnimation() {
     camera.applyGravity = false;
     camera.position.y = 325
     camera.position.z = -350
     camera.setTarget(BABYLON.Vector3.Zero());
-    scene.enablePhysics(new BABYLON.Vector3(0, -9.81, 0), new BABYLON.CannonJSPlugin());
-    ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0 }, scene);
-    buildings.forEach(building => {
-        building.position.y = 0
-        building.physicsImpostor = new BABYLON.PhysicsImpostor(building, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 100000, restitution: 0 }, scene)
-    })
+    scene.fogDensity = 0.002;
+    buildings.forEach(building => building.position.y = 0)
 }
+
+engine.runRenderLoop(() => {
+    scene.render();
+});
