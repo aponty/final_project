@@ -1,0 +1,3 @@
+/rails_server/log/
+.env
+tmp/

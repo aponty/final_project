@@ -3133,3 +3133,47 @@ Processing by LevelsController#fps as HTML
 Completed 200 OK in 17ms (Views: 15.1ms)
 
 
+Started GET "/levels/fps" for 127.0.0.1 at 2017-08-11 11:42:43 -0400
+Processing by LevelsController#fps as HTML
+  Rendering levels/fps.html.erb within layouts/application
+  Rendered levels/fps.html.erb within layouts/application (0.3ms)
+Completed 200 OK in 16ms (Views: 14.7ms)
+
+
+Started GET "/levels/" for 127.0.0.1 at 2017-08-11 11:42:48 -0400
+Processing by LevelsController#index as HTML
+  Rendering levels/index.html.erb within layouts/application
+  Rendered levels/index.html.erb within layouts/application (0.7ms)
+Completed 200 OK in 16ms (Views: 14.0ms)
+
+
+Started GET "/levels/" for 127.0.0.1 at 2017-08-11 11:42:49 -0400
+Processing by LevelsController#index as HTML
+  Rendering levels/index.html.erb within layouts/application
+  Rendered levels/index.html.erb within layouts/application (0.6ms)
+Completed 200 OK in 15ms (Views: 13.2ms)
+
+
+Started GET "/" for 127.0.0.1 at 2017-08-11 11:42:54 -0400
+Started GET "/levels" for 127.0.0.1 at 2017-08-11 11:42:54 -0400
+Processing by LevelsController#index as HTML
+  Rendering levels/index.html.erb within layouts/application
+  Rendered levels/index.html.erb within layouts/application (0.5ms)
+Completed 200 OK in 14ms (Views: 12.7ms)
+
+
+Started GET "/" for 127.0.0.1 at 2017-08-11 11:43:13 -0400
+Started GET "/levels" for 127.0.0.1 at 2017-08-11 11:43:13 -0400
+Processing by LevelsController#index as HTML
+  Rendering levels/index.html.erb within layouts/application
+  Rendered levels/index.html.erb within layouts/application (1.3ms)
+Completed 200 OK in 323ms (Views: 178.4ms)
+
+
+Started GET "/levels" for 127.0.0.1 at 2017-08-11 11:43:15 -0400
+Processing by LevelsController#index as HTML
+  Rendering levels/index.html.erb within layouts/application
+  Rendered levels/index.html.erb within layouts/application (0.5ms)
+Completed 200 OK in 26ms (Views: 24.4ms)
+
+
