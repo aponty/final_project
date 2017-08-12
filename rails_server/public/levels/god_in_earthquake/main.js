@@ -1,3 +1,4 @@
+document.body.style.cursor = 'none';
 let ground;
 const buildings = []
 const canvas = document.querySelector('#canvas')
@@ -35,6 +36,9 @@ function createScene() {
     ground.position = new BABYLON.Vector3(0, 0, 0);
     ground.scaling.y = 0.01;
 
+    ground.material = new BABYLON.StandardMaterial("texture1", scene);
+    ground.material.diffuseTexture = new BABYLON.Texture("/levels/assets/assets/textures/speckles.jpg", scene);
+
     //Wall
     const backWall = BABYLON.Mesh.CreateBox("backWall", 20, scene, false, BABYLON.Mesh.FRONTSIDE);
     backWall.position.y = 10
@@ -42,6 +46,8 @@ function createScene() {
     backWall.scaling.x = 20
     backWall.scaling.y = 3
     backWall.scaling.z = .1
+    backWall.material = new BABYLON.StandardMaterial("texture1", scene);
+    backWall.material.diffuseTexture = new BABYLON.Texture("/levels/assets/assets/textures/floor.png", scene);
 
     const frontWall = BABYLON.Mesh.CreateBox("frontWall", 20, scene, false, BABYLON.Mesh.FRONTSIDE);
     frontWall.position.y = 10
@@ -49,6 +55,9 @@ function createScene() {
     frontWall.scaling.x = 20
     frontWall.scaling.y = 3
     frontWall.scaling.z = .1
+    frontWall.material = new BABYLON.StandardMaterial("texture1", scene);
+    frontWall.material.diffuseTexture = new BABYLON.Texture("/levels/assets/assets/textures/floor.png", scene);
+
 
     const leftWall = BABYLON.Mesh.CreateBox("leftWall", 20, scene, false, BABYLON.Mesh.FRONTSIDE);
     leftWall.position.y = 10
@@ -56,6 +65,8 @@ function createScene() {
     leftWall.scaling.x = .1
     leftWall.scaling.y = 3
     leftWall.scaling.z = 20
+    leftWall.material = new BABYLON.StandardMaterial("texture1", scene);
+    leftWall.material.diffuseTexture = new BABYLON.Texture("/levels/assets/assets/textures/floor.png", scene);
 
     const rightWall = BABYLON.Mesh.CreateBox("rightWall", 20, scene, false, BABYLON.Mesh.FRONTSIDE);
     rightWall.position.y = 10
@@ -64,6 +75,8 @@ function createScene() {
     rightWall.scaling.x = .1
     rightWall.scaling.y = 3
     rightWall.scaling.z = 19
+    rightWall.material = new BABYLON.StandardMaterial("texture1", scene);
+    rightWall.material.diffuseTexture = new BABYLON.Texture("/levels/assets/assets/textures/floor.png", scene);
 
     //Cannon physics
     scene.enablePhysics(new BABYLON.Vector3(0, -9.81, 0), new BABYLON.CannonJSPlugin());
@@ -163,6 +176,9 @@ function makeBuilding(scene) {
     building.checkCollisions = true
     buildings.push(building)
     building.physicsImpostor = new BABYLON.PhysicsImpostor(building, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 100000, restitution: 1 }, scene);
+
+    building.material = new BABYLON.StandardMaterial("texture1", scene);
+    building.material.diffuseTexture = new BABYLON.Texture("/levels/assets/assets/textures/albedo.png", scene);
 }
 
 function pickCurrentTarget() {

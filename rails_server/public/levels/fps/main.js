@@ -1,5 +1,5 @@
 const canvas = document.querySelector('#canvas')
-
+document.body.style.cursor = 'none';
 const engine = new BABYLON.Engine(canvas, true);
 engine.isPointerLock = true;
 window.addEventListener('resize', () => engine.resize());
@@ -29,6 +29,21 @@ function createScene() {
     const ground = BABYLON.Mesh.CreateBox("ground", 1000, scene);
     ground.position = new BABYLON.Vector3(0, 0, 0);
     ground.scaling.y = 0.01;
+    ground.material = new BABYLON.StandardMaterial("texture1", scene);
+    ground.material.diffuseTexture = new BABYLON.Texture("/levels/assets/assets/textures/grass.png", scene);
+
+    const mountain = BABYLON.Mesh.CreateGroundFromHeightMap("mountain", "/levels/assets/assets/textures/heightMap.png", 150, 150, 50, 0, 150, scene, false);
+    mountain.material = new BABYLON.StandardMaterial("texture1", scene);
+    mountain.material.diffuseTexture = new BABYLON.Texture("/levels/assets/assets/textures/grass.png", scene);
+    mountain.checkCollisions = true
+
+    BABYLON.SceneLoader.ImportMesh("", "/levels/assets/assets/meshes/Dude/", "dude.babylon", scene, function (cats) {
+        cat = cats[0]
+        cat.position = new BABYLON.Vector3(-150, 10, -250)
+        cat.checkCollisions = true
+    });
+
+
 
     //Wall
     const backWall = BABYLON.Mesh.CreateBox("backWall", 10, scene, false, BABYLON.Mesh.FRONTSIDE);
@@ -100,14 +115,14 @@ function createScene() {
 }
 
 function makeCamera() {
-    const camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(0, 3, -20), scene);
+    const camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(-200, 30, -220), scene);
     //for map dev
-    camera.position.y = 325
-    camera.position.z = -350
-    camera.setTarget(BABYLON.Vector3.Zero());
+    // camera.position.y = 325
+    // camera.position.z = -350
+    // camera.setTarget(BABYLON.Vector3.Zero());
 
     camera.angularSensibility = 1500
-    // camera.applyGravity = true;
+    camera.applyGravity = true;
     camera.ellipsoid = new BABYLON.Vector3(2, 2, 2);
     camera.attachControl(canvas, true);
     camera.checkCollisions = true;
@@ -158,6 +173,14 @@ function onKeyUp(event) {
 
 function makeBuilding(scene) {
     //adapted from http://pixelcodr.com/tutos/plane/plane.html
+    const buildingTextures = [
+        'bricks.jpg',
+        'crumble.jpg',
+        'glass.jpg'
+    ]
+    //this isn't finished. rand from 1-3 (or whatever) to get texture link
+    const texture = buildingTextures[Math.floor(Math.random )]
+
     const randomX = Math.random() * -1000 + 500
     const randomZ = Math.random() * -1000 + 500
     const randomSize = Math.random() * 8 + 2
@@ -171,6 +194,10 @@ function makeBuilding(scene) {
     building.position.x = randomX;
     building.position.z = randomZ;
     building.position.y = randomSize * (building.scaling.y / 2)
+
+    //this is template to put textures on buildings
+    ground.material = new BABYLON.StandardMaterial("texture1", scene);
+    ground.material.diffuseTexture = new BABYLON.Texture("/levels/assets/assets/textures/grass.png", scene);
 
     building.checkCollisions = true
 }
@@ -197,7 +224,7 @@ function pickCurrentTarget() {
 
         const invView = new BABYLON.Matrix();
         camera.getViewMatrix().invertToRef(invView);
-        const direction = BABYLON.Vector3.TransformNormal(new BABYLON.Vector3(0, 0, 1), invView);
+        const direction = BABYLON.Vector3.TransformNormal(new BABYLON.Vector3(0, 0, 100000), invView);
 
         direction.normalize();
 

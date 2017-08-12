@@ -5,14 +5,13 @@ following a tutorial at http://pixelcodr.com/tutos/plane/plane.html
 Tutorial creator is Julian Chenard, part of Babylon's dev team;
 all things considered, his work taught me how to use this library
 */
-
 const canvas = document.querySelector('#canvas')
 const engine = new BABYLON.Engine(canvas, true);
 window.addEventListener('resize', () => engine.resize());
 const scene = createScene();
 const ship = makeShip(2, scene)
 
-let camera,
+var camera,
     ground;
 
 function createScene() {
