@@ -34,17 +34,32 @@ body {
 
 #gunsight {
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 52%;
+    left: 52%;
     margin-top: -37px;
     margin-left: -37px;
-    font-size: 60px;
-    font-weight: bold;
+    font-size: 40px;
 }
 
 #ammoLabel {
     position: absolute;
     top: 20px;
+    left: 20px;
+    color: white;
+    font-size: 2em;
+}
+
+#scoreLabel {
+    position: absolute;
+    top: 50px;
+    left: 20px;
+    color: white;
+    font-size: 2em;
+}
+
+#lifeLabel {
+    position: absolute;
+    top: 80px;
     left: 20px;
     color: white;
     font-size: 2em;
