@@ -17,8 +17,8 @@ class LevelsController < ApplicationController
     def score
         @scores = Score.where(level: params[:level])
 		url = "https://arduinorelaytunnel.localtunnel.me/"
-		# response = HTTParty.get(url)
-        # puts response
+		response = HTTParty.get(url)
+        puts response
     end
 
     def post
