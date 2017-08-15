@@ -2,7 +2,7 @@ document.body.style.cursor = 'none';
 let ground;
 const buildings = []
 const canvas = document.querySelector('#canvas')
-
+let gameRun = true;
 const engine = new BABYLON.Engine(canvas, true);
 engine.isPointerLock = true;
 window.addEventListener('resize', () => engine.resize());
@@ -207,6 +207,11 @@ function endAnimation() {
     camera.setTarget(BABYLON.Vector3.Zero());
     scene.fogDensity = 0.002;
     buildings.forEach(building => building.position.y = 0)
+    setTimeout(()=>{
+        gameRun = false;
+        clearInterval(score)
+        document.querySelector('.modalBackground').style.display = 'block'
+    }, 3000)
 }
 
 function winCheck() {
@@ -214,8 +219,19 @@ function winCheck() {
         endAnimation();
     }
 }
+//easy but even easier to google;
+// https://stackoverflow.com/questions/5517597/plain-count-up-timer-in-javascript
+let sec = 0;
+function pad ( val ) { return val > 9 ? val : "0" + val; }
+const score = setInterval( function(){
+    document.getElementById("ammoLabel").innerHTML = `TIME: ${pad(++sec%60)}`;
+    document.querySelector("#levels_score").value = pad(++sec%60)
+}, 1000);
+
 
 engine.runRenderLoop(() => {
-    scene.render();
-    winCheck()
+    if (gameRun) {
+        scene.render();
+        winCheck()
+    }
 });

@@ -1,15 +1,13 @@
-const canvas = document.querySelector('#canvas')
+const canvas = document.querySelector('#canvas');
 document.body.style.cursor = 'none';
 const engine = new BABYLON.Engine(canvas, true);
 engine.isPointerLock = true;
 window.addEventListener('resize', () => engine.resize());
 const TARGETS = [];
 const ENEMIES = [];
+let gameRun = true;
 BABYLON.Tools.RegisterTopRootEvents([
     {
-        name: "keydown",
-        handler: onKeyDown
-    }, {
         name: "keyup",
         handler: onKeyUp
     }, {
@@ -34,12 +32,12 @@ function createScene() {
     const light1 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(-100, 500, -2), scene);
 
     const ground = BABYLON.Mesh.CreateGround("ground", 1000, 1000, 5, scene);
-    ground.material = new BABYLON.StandardMaterial('texture1', scene)
+    ground.material = new BABYLON.StandardMaterial('texture1', scene);
     ground.material.diffuseTexture = new BABYLON.Texture("/levels/assets/assets/textures/grass.png", scene);
 
     const water = BABYLON.Mesh.CreateGround("water", 1000, 1000, 5, scene);
     water.material = new BABYLON.WaterMaterial("water_material", scene);
-    water.material.bumpTexture = new BABYLON.Texture("/levels/assets/assets/textures/waterbump.png", scene)
+    water.material.bumpTexture = new BABYLON.Texture("/levels/assets/assets/textures/waterbump.png", scene);
     water.material.backFaceCulling = true;
     water.material.windForce = -10;
     water.material.waveHeight = 1.5;
@@ -60,13 +58,7 @@ function createScene() {
     mountain.material.bumpTexture.uScale = 50;
     mountain.material.bumpTexture.vScale = 50;
     mountain.material.specularColor = new BABYLON.Color3.Black();
-    mountain.checkCollisions = true
-
-    // BABYLON.SceneLoader.ImportMesh("", "/levels/assets/assets/meshes/Dude/", "dude.babylon", scene, function (meshes) {
-    //     person = meshes[0]
-    //     person.position = new BABYLON.Vector3(-150, 5, -250)
-    //     person.checkCollisions = true
-    // });
+    mountain.checkCollisions = true;
 
     //Cannon physics
     scene.enablePhysics(new BABYLON.Vector3(0, -9.81, 0), new BABYLON.CannonJSPlugin());
@@ -87,28 +79,28 @@ function createScene() {
             mass: 0,
             restitution: 0
         }, scene);
-        walls.push(wall)
+        walls.push(wall);
     }
 
-    const backWall = walls[0]
-    backWall.position.z = -500
-    backWall.scaling.x = 100
-    backWall.scaling.z = .1
+    const backWall = walls[0];
+    backWall.position.z = -500;
+    backWall.scaling.x = 100;
+    backWall.scaling.z = .1;
 
-    const frontWall = walls[1]
-    frontWall.position.z = 500
-    frontWall.scaling.x = 100
-    frontWall.scaling.z = .1
+    const frontWall = walls[1];
+    frontWall.position.z = 500;
+    frontWall.scaling.x = 100;
+    frontWall.scaling.z = .1;
 
-    const leftWall = walls[2]
-    leftWall.position.x = -500
-    leftWall.scaling.x = .1
-    leftWall.scaling.z = 100
+    const leftWall = walls[2];
+    leftWall.position.x = -500;
+    leftWall.scaling.x = .1;
+    leftWall.scaling.z = 100;
 
-    const rightWall = walls[3]
-    rightWall.position.x = 500
-    rightWall.scaling.x = .1
-    rightWall.scaling.z = 100
+    const rightWall = walls[3];
+    rightWall.position.x = 500;
+    rightWall.scaling.x = .1;
+    rightWall.scaling.z = 100;
 
     for (let i = 0; i < 20; i++) {
         makeBuilding(scene);
@@ -124,21 +116,21 @@ function makeCamera() {
     const camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(-480, 500, -480), scene);
 
     camera.applyGravity = true;
-    camera.angularSensibility = 1500
+    camera.angularSensibility = 1500;
     camera.ellipsoid = new BABYLON.Vector3(2, 5, 2);
     camera.attachControl(canvas, true);
     camera.checkCollisions = true;
     camera._needMoveForGravity = true;
-    camera.setTarget(new BABYLON.Vector3(0, 450, 0))
+    camera.setTarget(new BABYLON.Vector3(0, 450, 0));
 
     camera.ammo = 30;
     camera.score = 0;
-    camera.life = 250;
+    camera.life = 150;
 
     const startPost = BABYLON.Mesh.CreateBox('building', 30, scene);
-    startPost.scaling.y = 8
-    startPost.position = new BABYLON.Vector3(-480, 25, -480)
-    startPost.checkCollisions = true
+    startPost.scaling.y = 8;
+    startPost.position = new BABYLON.Vector3(-480, 25, -480);
+    startPost.checkCollisions = true;
     startPost.material = new BABYLON.StandardMaterial("texture1", scene);
     startPost.material.diffuseTexture = new BABYLON.Texture("/levels/assets/assets/textures/albedo.png", scene);
 
@@ -170,10 +162,6 @@ function jumpCamera(cam) {
     scene.beginAnimation(cam, 0, 20, false);
 }
 
-function onKeyDown(event) {
-    // if (event.keyCode === 32) camera.jump = true
-}
-
 function onKeyUp(event) {
     if (event.keyCode === 32) {
         jumpCamera(camera);
@@ -182,25 +170,25 @@ function onKeyUp(event) {
 
 function makeBuilding(scene) {
     //adapted from http://pixelcodr.com/tutos/plane/plane.html
-    const randomX = Math.random() * -1000 + 500
-    const randomZ = Math.random() * -1000 + 500
+    const randomX = Math.random() * -1000 + 500;
+    const randomZ = Math.random() * -1000 + 500;
 
     const building = BABYLON.Mesh.CreateBox('building', 25, scene);
 
-    building.scaling.x = Math.random() * 2 + 4
-    building.scaling.y = Math.random() * 4 + 4
-    building.scaling.z = Math.random() + 2
+    building.scaling.x = Math.random() * 2 + 4;
+    building.scaling.y = Math.random() * 4 + 4;
+    building.scaling.z = Math.random() + 2;
 
     building.position.x = randomX;
     building.position.z = randomZ;
-    building.position.y = 25
+    building.position.y = 25;
 
     building.material = new BABYLON.StandardMaterial("texture1", scene);
     building.material.diffuseTexture = new BABYLON.Texture("/levels/assets/assets/textures/albedo.png", scene);
 
-    makeTargets(scene, building.position.x, building.position.z)
+    makeTargets(scene, building.position.x, building.position.z);
 
-    building.checkCollisions = true
+    building.checkCollisions = true;
     building.physicsImpostor = new BABYLON.PhysicsImpostor(building, BABYLON.PhysicsImpostor.BoxImpostor, {
         mass: 0,
         restitution: 1
@@ -219,20 +207,20 @@ function pickCurrentTarget() {
         renderBullet();
 
         if (pickInfo.hit && pickInfo.pickedMesh.id === 'target') {
-            let x = camera.getTarget().subtract(camera.position).x * 400
-            let y = camera.getTarget().subtract(camera.position).y * 400
-            let z = camera.getTarget().subtract(camera.position).z * 400
+            let x = camera.getTarget().subtract(camera.position).x * 400;
+            let y = camera.getTarget().subtract(camera.position).y * 400;
+            let z = camera.getTarget().subtract(camera.position).z * 400;
             pickInfo.pickedMesh.applyImpulse(new BABYLON.Vector3(x, y, z), pickInfo.pickedMesh.getAbsolutePosition());
         }
         if (pickInfo.hit && pickInfo.pickedMesh.id === 'enemy') {
-            const enemy = pickInfo.pickedMesh
+            const enemy = pickInfo.pickedMesh;
             enemy.physicsImpostor = new BABYLON.PhysicsImpostor(enemy, BABYLON.PhysicsImpostor.BoxImpostor, {
                 mass: 1,
                 restitution: 0
             }, scene);
-            let x = camera.getTarget().subtract(camera.position).x * 400
-            let y = camera.getTarget().subtract(camera.position).y * 400
-            let z = camera.getTarget().subtract(camera.position).z * 400
+            let x = camera.getTarget().subtract(camera.position).x * 40;
+            let y = camera.getTarget().subtract(camera.position).y * 40;
+            let z = camera.getTarget().subtract(camera.position).z * 40;
             enemy.applyImpulse(new BABYLON.Vector3(x, y, z), pickInfo.pickedMesh.getAbsolutePosition());
         }
     }
@@ -318,7 +306,7 @@ function castRay(enemy) {
     }, 750);
 
     const camHit = ray.intersectsBoxMinMax(camera.position, new BABYLON.Vector3(camera.position.x + 1, camera.position.y + 1, camera.position.z + 1))
-
+    // so, I would think the ray could only hit things within its length. But it doesn't. A workaround is here- pythagorean's theorem in 3d to find distance
     if (camHit) {
         if (Math.abs(Math.sqrt(Math.pow(camera.position.x - enemy.position.x, 2) + Math.pow(camera.position.y - enemy.position.y, 2) + Math.pow(camera.position.z - enemy.position.z, 2))) < 100) {
             camera.life--;
@@ -351,19 +339,22 @@ function clean() {
         }
     }
     document.querySelector("#scoreLabel").innerHTML = "SCORE : " + camera.score;
+    document.querySelector("#levels_score").value = camera.score
 }
 
 function winCheck() {
-    if (camera.life <= 0)
-        console.log('lost')
-    if (camera.ammo === 0)
-        console.log('outta ammo, game over')
+    if (camera.life <= 0 || camera.ammo === 0) {
+        gameRun = false
+        document.querySelector('.modalBackground').style.display = 'block'
+    }
 }
 
 engine.runRenderLoop(() => {
-    scene.render();
-    creepyStare();
-    clean();
-    winCheck();
-    ENEMIES.forEach(enemy => moveEnemy(enemy))
+    if (gameRun) {
+        scene.render();
+        creepyStare();
+        clean();
+        winCheck();
+        ENEMIES.forEach(enemy => moveEnemy(enemy))
+    }
 });

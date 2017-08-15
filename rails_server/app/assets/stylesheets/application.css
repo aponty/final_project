@@ -18,10 +18,8 @@ body {
     margin: 0;
     padding: 0;
     font-family: sans-serif;
-
     display: flex;
     flex-wrap: wrap;
-
     justify-content: center;
     align-items: center;
 }
@@ -65,19 +63,57 @@ body {
     font-size: 2em;
 }
 
-.intro {
-    width: 75%;
-    margin-top: 15%;
-}
 
+/*
 .level_buttons {
     border: 1px solid black;
     padding: 10px;
     margin-top: 25%
-}
+}*/
 
 input {
-    width: 300px;
-    font-size: 8em;
+    width: 90%;
+    height: 30%;
+    font-size: 2em;
     margin: 10px;
+}
+
+
+/*following two courtesy of julie*/
+
+.modalBackground {
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(33, 33, 33, .5);
+    display: none;
+
+}
+
+.modal {
+    max-height: 60vh;
+    max-width: 40vw;
+    margin: 10% auto;
+    text-align: center;
+    line-height: 40px;
+    background-color: white;
+    border: 2px solid black;
+    border-radius: 10px;
+}
+
+.modalBackground.index {
+    background-color: white;
+    display: block
+}
+
+.scoreList {
+    font-size: 3em;
+    text-align: center;
+}
+
+.scoreitem {
+    font-size: .5em;
+    border: 2px solid black;
+    padding: 10px;
 }

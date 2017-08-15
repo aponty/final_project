@@ -1,26 +1,37 @@
 /**
-Built with some adaptations (I don't like prototypical inheritance)
+Built with adaptations (didn't want to fuss with prototypical inheritance)
 following a tutorial at http://pixelcodr.com/tutos/plane/plane.html
 
-Tutorial creator is Julian Chenard, part of Babylon's dev team;
+Tutorial creator is Julian Chenard, one of Babylon's contributing devs;
 all things considered, his work taught me how to use this library
 */
-const canvas = document.querySelector('#canvas')
+const canvas = document.querySelector('#canvas');
 const engine = new BABYLON.Engine(canvas, true);
 window.addEventListener('resize', () => engine.resize());
 const scene = createScene();
-const ship = makeShip(2, scene)
-
-var camera,
-    ground;
+var ship;
+makeShip(2, scene);
+var camera;
+var ground;
+var light0;
+let gameRun = true;
 
 function createScene() {
     const scene = new BABYLON.Scene(engine);
+    scene.clearColor = new BABYLON.Color3(0,0,0)
+    scene.fogMode = BABYLON.Scene.FOGMODE_EXP2;
+    scene.fogDensity = 0.0001;
+    scene.fogColor = new BABYLON.Color4.FromHexString("#9599a0");
 
     camera = new BABYLON.FreeCamera('camera', new BABYLON.Vector3(0, 5, -30), scene);
     camera.setTarget(new BABYLON.Vector3(0, 0, 20));
     camera.maxZ = 1000;
+    camera.position.y = 7
     camera.speed = 4
+
+    light0 = new BABYLON.SpotLight("Spot0", new BABYLON.Vector3(0, 0, 2), new BABYLON.Vector3(0, 0, 1), 0.8, 2, scene);
+    light0.diffuse = new BABYLON.Color3(1, 0, 0);
+    light0.specular = new BABYLON.Color3(1, 1, 1);
 
     const hLight = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0, 0.5, 0), scene);
     hLight.intensity = 0.6;
@@ -30,35 +41,48 @@ function createScene() {
     dirLight.intensity = 0.4;
     dirLight.diffuse = BABYLON.Color3.FromInts(204, 196, 255);
 
-    ground = BABYLON.Mesh.CreateGround('ground', 800, 2000, 2, scene);
-
     return scene
 }
 
 function makeShip(size, scene) {
-    const ship = new BABYLON.Mesh.CreateBox('ship', 1, scene);
-    ship.killed = false;
-    ship.ammo = 30;
+    BABYLON.SceneLoader.ImportMesh("", "/levels/assets/assets/meshes/", "tie.babylon", scene, meshes => {
+        const tie = meshes[0]
+        tie.killed = false;
 
-    ship.position.x = 0;
-    ship.position.z = 0;
-    ship.position.y = size / 2;
+        tie.position.x = 0;
+        tie.position.z = 0;
+        tie.position.y = size / 2;
 
-    ship.speed = 5;
-    ship.moveLeft = false;
-    ship.moveRight = false;
+        tie.scaling.x = 4;
+        tie.scaling.y = 4;
+        tie.scaling.z = 4;
 
-    ship.move = () => {
-        if (ship.moveRight) {
-            ship.position.x += .5;
-            camera.position.x += .5;
+        tie.speed = 13;
+        tie.moveLeft = false;
+        tie.moveRight = false;
+        tie.moveUp = false;
+        tie.moveDown = false;
+
+        tie.move = () => {
+            if (tie.moveRight) {
+                tie.position.x += 2;
+                camera.position.x += 2;
+            }
+            if (tie.moveLeft) {
+                tie.position.x -= 2;
+                camera.position.x -= 2;
+            }
+            if (tie.moveUp) {
+                tie.position.y += 2;
+                camera.position.y += 2;
+            }
+            if (tie.moveDown) {
+                tie.position.y -= 2;
+                camera.position.y -= 2;
+            }
         }
-        if (ship.moveLeft) {
-            ship.position.x -= .5;
-            camera.position.x -= .5;
-        }
-    }
-    return ship;
+        ship = tie;
+    });
 }
 
 BABYLON.Tools.RegisterTopRootEvents([
@@ -68,9 +92,6 @@ BABYLON.Tools.RegisterTopRootEvents([
     }, {
         name: "keyup",
         handler: onKeyUp
-    }, {
-        name: "ammoUpdated",
-        handler: updateAmmoLabel
     }
 ]);
 
@@ -83,11 +104,21 @@ function onKeyDown(e) {
         ship.moveRight = true;
         ship.moveLeft = false;
     }
+    if (e.keyCode === 87) {
+        ship.moveUp = true;
+        ship.moveDown = false;
+    }
+    if (e.keyCode === 83) {
+        ship.moveDown = true;
+        ship.moveUp = false;
+    }
 }
 
 function onKeyUp(e) {
     ship.moveLeft = false;
     ship.moveRight = false;
+    ship.moveUp = false;
+    ship.moveDown = false;
 }
 
 function randomNumber (min, max) {
@@ -98,71 +129,67 @@ function randomNumber (min, max) {
     return ((random * (max - min)) + min );
 }
 
-function makeBuilding () {
+function makeAsteroid () {
     const minZ = camera.position.z + 500;
     const maxZ = camera.position.z + 1500;
     const minX = camera.position.x - 100;
     const maxX = camera.position.x + 100;
+    const minY = camera.position.y + 100;
+    const maxY = camera.position.y - 100;
     const minSize = 2;
     const maxSize = 10;
 
     const randomX = randomNumber(minX, maxX);
     const randomZ = randomNumber(minZ, maxZ);
+    const randomY = randomNumber(minY, maxY);
     const randomSize = randomNumber(minSize, maxSize);
 
-    const building = BABYLON.Mesh.CreateBox('building', randomSize, scene);
+    const asteroid = BABYLON.Mesh.CreateSphere('asteroid', 10, randomSize, scene);
 
-    building.scaling.x = randomNumber(0.5, 1.5);
-    building.scaling.y = randomNumber(4, 8);
-    building.scaling.z = randomNumber(2, 3);
+    asteroid.scaling.x = randomNumber(2, 3);
+    asteroid.scaling.y = randomNumber(2, 3);
+    asteroid.scaling.z = randomNumber(2, 3);
 
-    building.position.x = randomX;
-    building.position.y = building.scaling.y/2 ;
-    building.position.z = randomZ;
+    asteroid.position.x = randomX;
+    asteroid.position.y = randomY;
+    asteroid.position.z = randomZ;
 
-    building.actionManager = new BABYLON.ActionManager(scene);
+    asteroid.material = new BABYLON.StandardMaterial('texture1', scene);
+    asteroid.material.diffuseTexture = new BABYLON.Texture("/levels/assets/assets/textures/rock.png", scene);
+    asteroid.material.bumpTexture = new BABYLON.Texture("/levels/assets/assets/textures/rockn.png", scene);
+
+    asteroid.actionManager = new BABYLON.ActionManager(scene);
     const trigger = { trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger, parameter: ship };
     const killShip = new BABYLON.SwitchBooleanAction(trigger, ship, 'killed');
-    building.actionManager.registerAction(killShip);
-
-    //if ammo > 1
-    const condition = new BABYLON.ValueCondition(building.actionManager, ship, "ammo", 0, BABYLON.ValueCondition.IsGreater);
-
-    const onpickAction = new BABYLON.ExecuteCodeAction(
-        BABYLON.ActionManager.OnPickTrigger,
-        function(evt) {
-            if (evt.meshUnderPointer) {
-                const meshClicked = evt.meshUnderPointer;
-                meshClicked.dispose();
-                ship.ammo -= 1;
-                sendEvent();
-            }
-        },
-        condition);
-
-    building.actionManager.registerAction(onpickAction);
+    asteroid.actionManager.registerAction(killShip);
 }
 
-function updateAmmoLabel() {
-    document.querySelector("#ammoLabel").innerHTML = "AMMO : "+ship.ammo;
-};
+const astInt = setInterval(makeAsteroid, 100);
 
-function sendEvent() {
-    const event = new Event('ammoUpdated');
-    window.dispatchEvent(event);
+function endAnimation() {
+    gameRun = false;
+    clearInterval(score)
+    clearInterval(astInt)
+    document.querySelector('.modalBackground').style.display = 'block'
 }
 
-
-setInterval(makeBuilding, 100);
+//easy but even easier to google;
+// https://stackoverflow.com/questions/5517597/plain-count-up-timer-in-javascript
+let sec = 0;
+function pad ( val ) { return val > 9 ? val : "0" + val; }
+const score = setInterval( function(){
+    document.getElementById("ammoLabel").innerHTML = `TIME: ${pad(++sec%60)}`;
+    document.querySelector("#levels_score").value = pad(++sec%60)
+}, 1000);
 
 engine.runRenderLoop(() => {
-    if (!ship.killed) {
+    if (ship && !ship.killed && gameRun) {
         ship.move();
-
         camera.position.z += ship.speed;
         ship.position.z += ship.speed;
-        ground.position.z += ship.speed;
     }
-
+    if (ship && ship.killed) {
+        endAnimation();
+    }
     scene.render();
 })

@@ -5,4 +5,6 @@ Rails.application.routes.draw do
     get '/levels/racer', to: 'levels#racer'
     get '/levels/fps', to: 'levels#fps'
     get '/levels/god_earthquake', to: 'levels#god_earthquake'
+    get '/levels/score', to: 'levels#score'
+    post '/levels', to: 'levels#post'
 end

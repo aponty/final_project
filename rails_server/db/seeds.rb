@@ -5,3 +5,9 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+
+Score.delete_all
+
+Score.create(:name => 'john',:score => 5,:level => 1)
+Score.create(:name => 'john',:score => 5,:level => 2)
+Score.create(:name => 'john',:score => 5,:level => 3)
