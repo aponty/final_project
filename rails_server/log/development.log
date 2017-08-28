@@ -37134,3 +37134,161 @@ Processing by LevelsController#index as HTML
 Completed 200 OK in 30ms (Views: 28.2ms | ActiveRecord: 0.0ms)
 
 
+Started GET "/" for 127.0.0.1 at 2017-08-19 22:22:18 -0400
+  [1m[35m (2.0ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Started GET "/levels" for 127.0.0.1 at 2017-08-19 22:22:18 -0400
+Processing by LevelsController#index as HTML
+  Rendering levels/index.html.erb within layouts/application
+  Rendered levels/index.html.erb within layouts/application (1.4ms)
+Completed 200 OK in 984ms (Views: 975.9ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/levels/fps" for 127.0.0.1 at 2017-08-19 22:22:21 -0400
+Processing by LevelsController#fps as HTML
+  Rendering levels/fps.html.erb within layouts/application
+  Rendered levels/fps.html.erb within layouts/application (16.4ms)
+Completed 200 OK in 27ms (Views: 25.1ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/levels/fps" for 127.0.0.1 at 2017-08-19 22:24:34 -0400
+Processing by LevelsController#fps as HTML
+  Rendering levels/fps.html.erb within layouts/application
+  Rendered levels/fps.html.erb within layouts/application (1.6ms)
+Completed 200 OK in 20ms (Views: 18.3ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/levels/fps" for 127.0.0.1 at 2017-08-19 22:24:37 -0400
+Processing by LevelsController#fps as HTML
+  Rendering levels/fps.html.erb within layouts/application
+  Rendered levels/fps.html.erb within layouts/application (1.9ms)
+Completed 200 OK in 19ms (Views: 16.7ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/levels/fps" for 127.0.0.1 at 2017-08-19 22:24:38 -0400
+Processing by LevelsController#fps as HTML
+  Rendering levels/fps.html.erb within layouts/application
+  Rendered levels/fps.html.erb within layouts/application (2.3ms)
+Completed 200 OK in 18ms (Views: 16.4ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/levels/fps" for 127.0.0.1 at 2017-08-19 22:24:42 -0400
+Processing by LevelsController#fps as HTML
+  Rendering levels/fps.html.erb within layouts/application
+  Rendered levels/fps.html.erb within layouts/application (1.1ms)
+Completed 200 OK in 11ms (Views: 9.4ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/levels/fps" for 127.0.0.1 at 2017-08-19 22:24:46 -0400
+Processing by LevelsController#fps as HTML
+  Rendering levels/fps.html.erb within layouts/application
+  Rendered levels/fps.html.erb within layouts/application (1.1ms)
+Completed 200 OK in 11ms (Views: 9.7ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/levels/fps" for 127.0.0.1 at 2017-08-19 22:24:53 -0400
+Processing by LevelsController#fps as HTML
+  Rendering levels/fps.html.erb within layouts/application
+  Rendered levels/fps.html.erb within layouts/application (1.3ms)
+Completed 200 OK in 15ms (Views: 13.3ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/levels/fps" for 127.0.0.1 at 2017-08-19 22:25:01 -0400
+Processing by LevelsController#fps as HTML
+  Rendering levels/fps.html.erb within layouts/application
+  Rendered levels/fps.html.erb within layouts/application (1.0ms)
+Completed 200 OK in 10ms (Views: 8.4ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/levels/fps" for 127.0.0.1 at 2017-08-19 22:25:02 -0400
+Processing by LevelsController#fps as HTML
+  Rendering levels/fps.html.erb within layouts/application
+  Rendered levels/fps.html.erb within layouts/application (1.6ms)
+Completed 200 OK in 11ms (Views: 9.3ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/levels/fps" for 127.0.0.1 at 2017-08-19 22:25:03 -0400
+Processing by LevelsController#fps as HTML
+  Rendering levels/fps.html.erb within layouts/application
+  Rendered levels/fps.html.erb within layouts/application (1.1ms)
+Completed 200 OK in 11ms (Views: 9.5ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/levels/fps" for 127.0.0.1 at 2017-08-19 22:25:03 -0400
+Processing by LevelsController#fps as HTML
+  Rendering levels/fps.html.erb within layouts/application
+  Rendered levels/fps.html.erb within layouts/application (1.4ms)
+Completed 200 OK in 12ms (Views: 10.6ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/levels/fps" for 127.0.0.1 at 2017-08-19 22:25:03 -0400
+Processing by LevelsController#fps as HTML
+  Rendering levels/fps.html.erb within layouts/application
+  Rendered levels/fps.html.erb within layouts/application (1.3ms)
+Completed 200 OK in 10ms (Views: 9.0ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/levels/fps" for 127.0.0.1 at 2017-08-19 22:25:04 -0400
+Processing by LevelsController#fps as HTML
+  Rendering levels/fps.html.erb within layouts/application
+  Rendered levels/fps.html.erb within layouts/application (1.6ms)
+Completed 200 OK in 15ms (Views: 13.2ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/levels/fps" for 127.0.0.1 at 2017-08-19 22:25:04 -0400
+Processing by LevelsController#fps as HTML
+  Rendering levels/fps.html.erb within layouts/application
+  Rendered levels/fps.html.erb within layouts/application (2.3ms)
+Completed 200 OK in 21ms (Views: 18.8ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at 2017-08-19 22:26:50 -0400
+  [1m[35m (0.6ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Started GET "/levels" for 127.0.0.1 at 2017-08-19 22:26:50 -0400
+Processing by LevelsController#index as HTML
+  Rendering levels/index.html.erb within layouts/application
+  Rendered levels/index.html.erb within layouts/application (0.9ms)
+Completed 200 OK in 29ms (Views: 21.8ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/levels/fps" for 127.0.0.1 at 2017-08-19 22:27:42 -0400
+Processing by LevelsController#fps as HTML
+  Rendering levels/fps.html.erb within layouts/application
+  Rendered levels/fps.html.erb within layouts/application (9.6ms)
+Completed 200 OK in 19ms (Views: 17.8ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/levels/fps" for 127.0.0.1 at 2017-08-19 22:27:50 -0400
+Processing by LevelsController#fps as HTML
+  Rendering levels/fps.html.erb within layouts/application
+  Rendered levels/fps.html.erb within layouts/application (1.1ms)
+Completed 200 OK in 11ms (Views: 9.1ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/levels/fps" for 127.0.0.1 at 2017-08-19 22:27:53 -0400
+Processing by LevelsController#fps as HTML
+  Rendering levels/fps.html.erb within layouts/application
+  Rendered levels/fps.html.erb within layouts/application (1.1ms)
+Completed 200 OK in 10ms (Views: 8.7ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/levels/fps" for 127.0.0.1 at 2017-08-19 22:27:58 -0400
+Processing by LevelsController#fps as HTML
+  Rendering levels/fps.html.erb within layouts/application
+  Rendered levels/fps.html.erb within layouts/application (1.2ms)
+Completed 200 OK in 11ms (Views: 8.9ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/levels/fps" for 127.0.0.1 at 2017-08-19 22:28:02 -0400
+Processing by LevelsController#fps as HTML
+  Rendering levels/fps.html.erb within layouts/application
+  Rendered levels/fps.html.erb within layouts/application (1.2ms)
+Completed 200 OK in 10ms (Views: 8.8ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/levels/fps" for 127.0.0.1 at 2017-08-19 22:28:08 -0400
+Processing by LevelsController#fps as HTML
+  Rendering levels/fps.html.erb within layouts/application
+  Rendered levels/fps.html.erb within layouts/application (1.2ms)
+Completed 200 OK in 11ms (Views: 9.6ms | ActiveRecord: 0.0ms)
+
+

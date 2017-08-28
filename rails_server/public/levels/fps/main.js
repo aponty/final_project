@@ -264,7 +264,7 @@ function makeEnemies(scene) {
     enemy.velocity.z = .75;
     enemy.velocity.x = .75;
     enemy.material = new BABYLON.StandardMaterial("texture1", scene);
-    enemy.material.diffuseTexture = new BABYLON.Texture("/levels/assets/assets/textures/crappic.jpg", scene);
+    // enemy.material.diffuseTexture = new BABYLON.Texture("/levels/assets/assets/textures/crappic.jpg", scene);
     scene.registerBeforeRender(() => castRay(enemy));
     ENEMIES.push(enemy);
 }
